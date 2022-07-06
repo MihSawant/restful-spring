@@ -3,6 +3,8 @@ package sawant.mihir.springbootrestdatatransfer.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import sawant.mihir.springbootrestdatatransfer.model.Cricketer;
 
@@ -46,6 +48,7 @@ public record AppController() {
     }
 
 
+
     @GetMapping("/cricketer/response")
     public ResponseEntity<Cricketer> getCricketerResponse(){
         var c3 = new Cricketer("Rohit Sharma", "India", 4);
@@ -54,6 +57,22 @@ public record AppController() {
                 .header("cricket_board", "BCCI")
                 .header("ipl_team", "MI")
                 .body(c3);
+    }
+
+    /*
+        Accepting Cricketer object from client request, As the
+        data is more, so we will transfer it by putting it into
+        the Request Body of the request. Request Body annotation
+        on the method will decode the JSON representation of object
+        to the Pojo. By default, Spring assumes the data to be in
+        JSON format and so it has the coder and de-coders implemented
+        for it.
+     */
+    @PostMapping("/cricketer")
+    public ResponseEntity<Cricketer> createCricketer(@RequestBody Cricketer cricketer){
+        Cricketer c = new Cricketer(cricketer.name(), cricketer.country(), cricketer.iccRank());
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(c);
     }
 
 
